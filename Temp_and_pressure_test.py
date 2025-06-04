@@ -18,6 +18,7 @@ SHT31D = adafruit_sht31d.SHT31D(i2c)
 start_requested = False
 stop_requested = False
 
+
 # Function to listen for "start" command
 def listen_for_start():
     global start_requested
@@ -27,6 +28,7 @@ def listen_for_start():
             start_requested = True
             break
 
+
 # Function to listen for "stop" command
 def listen_for_stop():
     global stop_requested
@@ -35,6 +37,7 @@ def listen_for_stop():
         if command.strip().lower() == "stop":
             stop_requested = True
             break
+
 
 # Start the stop Listener thread
 start_thread = threading.Thread(target=listen_for_start)

@@ -7,10 +7,11 @@ import struct
 from datetime import datetime
 
 # Import the ADS1x15 module for Greenland Mag
-import Adafruit_ADS1x15 # Not included in std library, need to download onto RPI
+import Adafruit_ADS1x15 # Not included in std library,
+                        # need to download onto RPI
 
 # Moldwin Mag initialization below
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 QRM3100_CMM = 0x01
 QRM3100_CCXMSB = 0x04
@@ -59,7 +60,7 @@ spi.max_speed_hz = 500000
 # |     0x96     |    1050     |        30.38722193          |
 # |     0x96     |    1500     |        21.45816376          |
 # |     0x96     |    2000     |        16.10569605          |
-desired_cycle = 200 # change this value to set cycle count for all 3 axes
+desired_cycle = 200  # change this value to set cycle count for all 3 axes
 spi.xfer2([QRM3100_CCXMSB, (desired_cycle & 0xFF00) >> 8])
 spi.xfer2([QRM3100_CCXLSB, (desired_cycle & 0x00FF)])
 spi.xfer2([QRM3100_CCYMSB, (desired_cycle & 0xFF00) >> 8])
@@ -74,19 +75,19 @@ spi.xfer2([QRM3100_CCZLSB, (desired_cycle & 0x00FF)])
 #               The default setting (TMRC=0x96) has a max sampling rate of ~37 Hz.
 #               See Table 5-4: CMM Update Rates on RM3100_Sensor_Suite_User_Manual_r07.pdf
 #               for the complete list of maximum sampling rates available.
-TMRC = 0x96 # change the hex value to set TMRC
+TMRC = 0x96  # change the hex value to set TMRC
 spi.xfer2([QRM3100_TMRC, TMRC]) 
 
 # Initiate continuous measurement mode, which uses the set TMRC value
 # as sampling rate to periodically read the values at all 3 axes.
 # Set CMM to read all 3 axes, 0x79 is the CMM value needed enable 3-axes reading 
 # (as opposed to single axis reading).
-spi.xfer2([QRM3100_CMM, 0x79]) 
+spi.xfer2([QRM3100_CMM, 0x79])
 
 # Start of output. First 3 lines are used as header (time zone used: UTC)
-#print('# time (s), B_x, B_y, B_z')
-#start = datetime.datetime.now()
-#print('# {} UTC'.format(start))
+# print('# time (s), B_x, B_y, B_z')
+# start = datetime.datetime.now()
+# print('# {} UTC'.format(start))
 
 # As part of the header, print cycle count to ensure raw value to
 # nanotesla conversion uses the correct cycle count value
@@ -102,6 +103,7 @@ print('# Cycle count (x,y,z): {}, {}, {}'.format((CYCLE_COUNT[1] << 8) | CYCLE_C
 # This function makes use of the struct.pack-unpack functions
 # to convert the python int into a signed int in C. The C signed
 # int is then shifted and sign extended using C convention.
+
 
 # Integer structure: byte1 is MSB, byte3 is LSB.
 def convert_to_signed_int(byte1, byte2, byte3):
@@ -135,6 +137,7 @@ def convert_to_signed_int(byte1, byte2, byte3):
 #-----------------------------------------------------------------------------
 # End of Greenland mag initialization
 
+
 def mag_data():
     
     # Ensure measurement is complete on all axis for Moldwin Mag
@@ -165,6 +168,7 @@ def mag_data():
     print('Moldwin y: {0}'.format(m_By))
     print('Moldwin z: {0}'.format(m_Bz))
     return [m_Bx, m_By, m_Bz]
+
 
 if __name__ == '__main__':
     mag_data()

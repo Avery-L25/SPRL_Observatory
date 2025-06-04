@@ -100,6 +100,7 @@ print('# Cycle count (x,y,z): {}, {}, {}'.format((CYCLE_COUNT[1] << 8) | CYCLE_C
 # to convert the python int into a signed int in C. The C signed
 # int is then shifted and sign extended using C convention.
 
+
 # Integer structure: byte1 is MSB, byte3 is LSB.
 def convert_to_signed_int(byte1, byte2, byte3):
     # Append the 3 PNI bytes into a single 3-byte int then convert into
@@ -118,6 +119,7 @@ def convert_to_signed_int(byte1, byte2, byte3):
     #print ("c_int[:-1].rjust(4, b'\x00'): ", c_int[:-1].rjust(4, b'\x00'))
     py_int = int(struct.unpack("<i", c_int[:-1].rjust(4, b'\x00'))[0] / 256)
     return py_int
+
 
 while True:
     # Ensure measurement is complete on all axes (DRDY pin is set HIGH)
