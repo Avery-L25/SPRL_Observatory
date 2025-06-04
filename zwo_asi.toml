@@ -1,0 +1,22 @@
+[controllables]
+AutoExpMaxExpMS = 30000
+AutoExpMaxGain = 225
+AutoExpTargetBrightness = 100
+BandWidth = "auto"
+Exposure = 50000
+Flip = 0
+Gain = 175
+HardwareBin = 0
+HighSpeedMode = 0
+MonoBin = 0
+Offset = 5
+WB_B = 95
+WB_R = 70
+
+[roi]
+start_x = 0
+start_y = 50
+width = 1832
+height = 1080
+bins = 3
+type = "rgb24"
