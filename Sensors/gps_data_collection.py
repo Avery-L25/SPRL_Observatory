@@ -19,7 +19,7 @@ def haversine(lat1, lon1, lat2, lon2):
 
 def parse_nmea_sentence(sentence):
     """Parse an NMEA sentence to extract GPS data."""
-    if sentence.startswith("$GPGGA"): 
+    if sentence.startswith("$GPGGA"):
         parts = sentence.split(',')
         if len(parts) > 9:
             time_utc = parts[1]
@@ -48,9 +48,9 @@ def convert_to_decimal(coord, direction):
 
 
 def main():
-    gps_port = "/dev/ttyUSB0" 
-    baud_rate = 9600          
-    log_file = "gps_log.csv" 
+    gps_port = "/dev/ttyUSB0"
+    baud_rate = 9600
+    log_file = "gps_log.csv"
 
     # Create log file and write header
     with open(log_file, 'w') as f:
@@ -67,7 +67,7 @@ def main():
 
             while True:
                 # Read a line from the GPS serial data
-                data = serial_port.readline().decode('ascii', 
+                data = serial_port.readline().decode('ascii',
                                                      errors='ignore').strip()
                 gps_data = parse_nmea_sentence(data)
 
@@ -87,9 +87,9 @@ def main():
 
                     # Log the data to a CSV file
                     with open(log_file, 'a') as f:
-                        f.write(f"{timestamp},{lat},{lon},{distance:.2f},
-                                {cumulative_distance:.2f}\n")
-                    
+                        f.write(f"{timestamp},{lat},{lon},{distance:.2f},"
+                                f"{cumulative_distance:.2f}\n")
+
                     # Print the information to the console
                     print(f"Timestamp: {timestamp}")
                     print(f"Latitude: {lat}")
@@ -101,8 +101,10 @@ def main():
                 time.sleep(1)
     except KeyboardInterrupt:
         print("Exiting program...")
+
     except Exception as e:
         print(f"Unexpected error: {e}")
+
 
 if __name__ == "__main__":
     main()
