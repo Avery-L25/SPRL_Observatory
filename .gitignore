@@ -192,3 +192,18 @@ cython_debug/
 #  refer to https://docs.cursor.com/context/ignore-files
 .cursorignore
 .cursorindexingignore
+
+# Extra files that may not be implemented into the raspi
+zwo_asi.toml
+SPRL_Observatory/Extra_Unused
+*.json
+*.toml
+*.pyc
+SPRL_Observatory/Sensors/__pycache__/
+SPRL_Observatory/Sensors/camera/__pycache__
+SPRL_Observatory/Data_processing/__pycache__
+SPRL_Observatory/Data_processing/transmission/__pycache__
+Extra_Unused
+*.rules
+*.Identifier
+*.Zone
