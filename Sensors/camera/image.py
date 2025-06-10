@@ -60,8 +60,8 @@ class Image:
         cv2.imwrite(str(filepath), image)
 
     def display(
-        self, label: str = "asi zwo camera", resize: typing.Optional[float] = None
-    ) -> None:
+        self, label: str = "asi zwo camera", resize: typing.Optional[float]
+            = None) -> None:
         """
         Display the image.
 
@@ -128,7 +128,8 @@ class ImageRGB24(Image):
 
     def __init__(self, width: int, height: int) -> None:
         super().__init__(ImageType.rgb24, width, height)
-        self._data: FlattenData = np.ndarray((width * height * 3), dtype=np.uint8)
+        self._data: FlattenData = np.ndarray((width * height * 3),
+                                             dtype=np.uint8)
 
     def get_data(self) -> FlattenData:
         return self._data
@@ -147,7 +148,8 @@ class ImageRaw16(Image):
 
     def __init__(self, width: int, height: int) -> None:
         super().__init__(ImageType.raw16, width, height)
-        self._data: FlattenData = np.ndarray((width * height * 2), dtype=np.uint8)
+        self._data: FlattenData = np.ndarray((width * height * 2),
+                                             dtype=np.uint8)
 
     def get_data(self) -> FlattenData:
         return self._data
