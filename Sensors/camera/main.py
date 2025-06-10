@@ -13,14 +13,16 @@ _CONFIG_FILE = "zwo_asi.toml"
 
 def udev():
     """
-    creates a files called 99-asi.rules and provides instruction on how to install it
+    creates a files called 99-asi.rules and provides
+    instruction on how to install it
     """
     create_udev_file()
     print("\nThe file 99-asi.rules has been created in the current directory.")
     print("You may install it: 'sudo install 99-asi.rules /lib/udev/rules.d'")
     print("and disconnect / reconnect the camera.")
     print(
-        "More information: https://astronomy-imaging-camera.com/manuals/ASI%20Cameras%20software%20Manual%20Linux%20OSX%20EN.pdf\n"
+        "More information: https://astronomy-imaging-camera.com/manuals/ASI%20"
+        "Cameras%20software%20Manual%20Linux%20OSX%20EN.pdf\n"
     )
 
 
@@ -52,7 +54,8 @@ def _shot():
         "--path",
         type=str,
         required=False,
-        help="absolute path in which the image will be saved (not saved if not specified)",
+        help=("absolute path in which the image will be saved"
+              "(not saved if not specified)"),
     )
 
     # do we display the image ?
@@ -68,7 +71,8 @@ def _shot():
         "-noconfig",
         "--noconfig",
         action="store_true",
-        help="ignore the zwo_asi.toml file that may be present in the current directory",
+        help=("ignore the zwo_asi.toml file that may be present in the"
+              "current directory"),
     )
 
     args = parser.parse_args()
