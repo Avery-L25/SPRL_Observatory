@@ -25,7 +25,8 @@ class Camera(Camera):
         nb_detected_cams = get_nb_cameras()
         super().__init__(index)
 
-    def set_control(self, controllable: str, value: typing.Union[int, str]) -> None:
+    def set_control(self, controllable: str,
+                    value: typing.Union[int, str]) -> None:
         """
         Set the value of the controllable.
 
@@ -56,10 +57,10 @@ class Camera(Camera):
         Configure the camera using a TOML formated configuration file.
         To get an example configuration file: see the method
         Camera.to_toml.
-        To request a controllable to be automatically set, use the string 'auto'
-        in the TOML configuration.
+        To request a controllable to be automatically set, use the string
+        'auto' in the TOML configuration.
         """
-        if isinstance(config,str):
+        if isinstance(config, str):
             config = Path(config)
         if isinstance(config, Path):
             # checking file exists
@@ -79,7 +80,8 @@ class Camera(Camera):
         for rk in required_keys:
             if rk not in content:
                 raise ValueError(
-                    f"toml camera configuration {config} is missing the key {rk}"
+                    f"toml camera configuration {config} is missing the "
+                    f"key {rk}"
                 )
 
         # reading values for controllables
@@ -91,8 +93,8 @@ class Camera(Camera):
         if issues:
             issues_str = ", ".join(issues)
             raise ValueError(
-                "The provided TOML file is not suitable for configuring the camera: "
-                f"{issues_str}"
+                "The provided TOML file is not suitable for configuring the "
+                f"camera: {issues_str}"
             )
 
         # creating and returning instance
@@ -107,14 +109,14 @@ class Camera(Camera):
             self,
             specify_auto: bool = True,
             non_writable: bool = False,
-    )->typing.Dict[str,typing.Any]:
+    ) -> typing.Dict[str, typing.Any]:
         """
-        Return a dictionary representation of the 
+        Return a dictionary representation of the
         current configuration of the camera, with the
         keys "roi" and the key "controllables".
         """
-        d: typing.Dict[str,typing.Any] = {}
-        controllables: typing.Dict[str,typing.Any] = {}
+        d: typing.Dict[str, typing.Any] = {}
+        controllables: typing.Dict[str, typing.Any] = {}
         for key, controllable in self.get_controls().items():
             if non_writable or controllable.is_writable:
                 if specify_auto and controllable.is_auto:
@@ -130,7 +132,7 @@ class Camera(Camera):
         d["roi"] = roi_d
 
         return d
-        
+
     def to_toml(
         self,
         path: Optional[Path] = None,
@@ -187,14 +189,20 @@ class Camera(Camera):
         if not controllable.is_writable:
             return None
         if controllable.is_auto and not controllable.supports_auto:
-            return f"controllable {controllable.name} is set to auto, but that is not supported"
+            return (f"controllable {controllable.name} is set to auto, but " +
+                    "that is not supported")
         if controllable.value > controllable.max_value:
-            return f"controllable {controllable.name} has value {controllable.value} > max value {controllable.max_value}"
+            return (f"controllable {controllable.name} has value "
+                    f"{controllable.value} > max value "
+                    f"{controllable.max_value}")
         if controllable.value < controllable.min_value:
-            return f"controllable {controllable.name} has value {controllable.value} < min value {controllable.min_value}"
+            return (f"controllable {controllable.name} has value "
+                    f"{controllable.value} < min value "
+                    f"{controllable.min_value}")
         return None
 
-    def configure(self, roi: ROI, controllables: Dict[str, Controllable]) -> None:
+    def configure(self, roi: ROI, controllables: Dict[str, Controllable]
+                  ) -> None:
         """
         Configure the camera, setting up the ROI (Region Of Interest) and
         values for the controllable.
@@ -202,11 +210,11 @@ class Camera(Camera):
         Arguments:
           roi: instance of ROI
           controllables: dictionary with keys are string that must correspond
-                         to controllables supported by the camera. To get a list
-                         of supported controllables, print an instance of Camera.
-                         The printed string will provided information about supported
-                         controllable, including the min and max values; and if 'auto'
-                         values are supported.
+                         to controllables supported by the camera. To get a
+                         list of supported controllables, print an instance of
+                         Camera. The printed string will provided information
+                         about supported controllable, including the min and
+                         max values; and if 'auto' values are supported.
         """
         issues = roi.check(self.get_info())
         opt_controllable_issues: List[Optional[str]] = [
@@ -238,9 +246,9 @@ class Camera(Camera):
         Take a picture. Either fill the image passed as argument, or
         create a new one. If an image is passed as argument, it should be
         of a size suitable for the requested ROI. To get an image of the
-        correct size, call "image = camera.get_roi().get_image()". If filepath is not
-        None, the image is saved to file. If show is True, the image is displayed
-        (opencv window).
+        correct size, call "image = camera.get_roi().get_image()". If filepath
+        is not None, the image is saved to file. If show is True, the image is
+        displayed (opencv window).
         """
 
         if image is None:
@@ -280,7 +288,8 @@ class Camera(Camera):
             ["|controllable", "-" * 13] + list((map(_str_control, controls)))
         )
         values = _same_length(
-            ["|value", "-" * 6] + [f"|{str(control.value)}" for control in controls]
+            ["|value", "-" * 6] + [f"|{str(control.value)}" for control in
+                                   controls]
         )
         mins = _same_length(
             ["|min value", "-" * 10]
@@ -295,7 +304,8 @@ class Camera(Camera):
             r.append("\t".join([name, value, min_, max_]))
 
         r.append(
-            "|legend: (w): is writable, (auto): in auto mode, (as): auto mode not active but supported\n"
+            "|legend: (w): is writable, (auto): in auto mode, (as): auto mode"
+            "not active but supported\n"
         )
 
         return "\n".join(r)
