@@ -2,9 +2,12 @@ import os
 from pathlib import Path
 from Sensors.camera.camera import Camera
 from bindings import get_nb_cameras, create_udev_file
+
 _CONFIG_FILE = "zwo_asi.toml"
+
+
 def shot():
-   
+
     index = 0
     print(f"opening camera {index}")
     camera = Camera(index)
@@ -23,9 +26,10 @@ def shot():
     save_path = r'test.jpg'
     print(f"saving to {save_path}")
     image.save(save_path)
-    
-    #print(camera.get_controls())
-    #camera.to_toml('camera.toml')
+
+    # print(camera.get_controls())
+    # camera.to_toml('camera.toml')
     return image.get_image()
+
 
 shot()
