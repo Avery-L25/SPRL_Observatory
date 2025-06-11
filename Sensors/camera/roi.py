@@ -43,19 +43,21 @@ class ROI(bindings.ROI):
         if isinstance(content, Path):
             if not content.is_file():
                 raise FileNotFoundError(
-                    f"failed to create an instance of ROI from {path}: file not found"
+                    f"failed to create an instance of ROI from {path}: file "
+                    "not found"
                 )
             d = toml.load(content)
         else:
             d = content
 
-        required_keys = ("start_x", "start_y", "width", "height", "bins", "type")
+        required_keys = ("start_x", "start_y", "width", "height", "bins",
+                         "type")
         missing_keys = [rk for rk in required_keys if not rk in d]
         if missing_keys:
             missing_str = ", ".join(missing_keys)
             raise ValueError(
-                f"failed to create an instance of ROI: missing configuration for "
-                f"{missing_str}"
+                f"failed to create an instance of ROI: missing configuration"
+                f" for {missing_str}"
             )
 
         roi = cls()
@@ -94,7 +96,8 @@ class ROI(bindings.ROI):
         issues: typing.List[str] = []
 
         if self.bins not in info.supported_bins:
-            supported_bins: str = ",".join([str(b) for b in info.supported_bins])
+            supported_bins: str = ",".join([str(b) for b in
+                                            info.supported_bins])
             issues.append(
                 "{} bin(s) not supported (supported: {})".format(
                     self.bins, supported_bins
@@ -119,11 +122,13 @@ class ROI(bindings.ROI):
 
         if self.width > info.max_width:
             issues.append(
-                f"width {self.width} is bigger than the maximal supported width {info.max_width}"
+                f"width {self.width} is bigger than the maximal supported"
+                f" width {info.max_width}"
             )
         if self.height > info.max_height:
             issues.append(
-                f"height {self.height} is bigger than the maximal supported height {info.max_height}"
+                f"height {self.height} is bigger than the maximal supported "
+                f"height {info.max_height}"
             )
         if self.width % 8 != 0:
             issues.append(f"width {self.width} is not a multiple of 8")
@@ -133,18 +138,22 @@ class ROI(bindings.ROI):
         if self.bins != 0:
             if self.start_x + self.width > (info.max_width / self.bins):
                 raise ValueError(
-                    f"ROI and start position ({self.start_x + self.width}) larger than binned sensor width ({info.max_width / self.bins})"
+                    f"ROI and start position ({self.start_x + self.width}) "
+                    f"larger than binned sensor width "
+                    f"({info.max_width / self.bins})"
                 )
             if self.start_y + self.height > (info.max_height / self.bins):
                 raise ValueError(
-                    f"ROI and start position ({self.start_y + self.height}) larger than binned sensor height ({info.max_height / self.bins})"
+                    f"ROI and start position ({self.start_y + self.height}) "
+                    f"larger than binned sensor height "
+                    f"({info.max_height / self.bins})"
                 )
 
         return issues
 
     def __str__(self):
         """
-        Return a string informative about the values of the attributes.
+        Return a string of informative about the values of the attributes.
         """
 
         return str(
