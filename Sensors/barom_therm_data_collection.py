@@ -1,7 +1,8 @@
-import time
+
+# // import time
 import board
-import busio
-import csv
+# // import busio
+# // import csv
 import adafruit_lps35hw
 import adafruit_sht31d
 

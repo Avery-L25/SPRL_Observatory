@@ -73,7 +73,7 @@ def main():
 
                 if gps_data:
                     lat, lon = gps_data['latitude'], gps_data['longitude']
-                    timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+                    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
                     # Calculate distance if previous position exists
                     if prev_lat is not None and prev_lon is not None:
