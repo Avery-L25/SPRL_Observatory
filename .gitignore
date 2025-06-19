@@ -204,6 +204,14 @@ SPRL_Observatory/Sensors/camera/__pycache__
 SPRL_Observatory/Data_processing/__pycache__
 SPRL_Observatory/Data_processing/transmission/__pycache__
 Extra_Unused
+
+# types of files
 *.rules
 *.Identifier
 *.Zone
+*.txt
+*.csv
+*.hdf5
+*.jpg
+*.webp
+*.png
