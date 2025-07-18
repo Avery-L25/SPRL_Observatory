@@ -207,6 +207,7 @@ Extra_Unused
 
 # A complete testing folder
 SPRL_Observatory/Data_processing/transmission
+SPRL_Observatory/Data_processing/transmission
 
 # types of files
 *.rules
@@ -218,3 +219,4 @@ SPRL_Observatory/Data_processing/transmission
 *.jpg
 *.webp
 *.png
+*.h5py
