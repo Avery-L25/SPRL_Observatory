@@ -8,7 +8,6 @@ import numpy as np
 #// from ischedule import run_loop, schedule
 import schedule
 from Data_processing.image_processing import Image
-# // from Data_processing.transmission.file_transmission_2 import upload_file_to_drive #NOTE not planning on uploading to drive this is a placeholder
 from Data_processing.hdf import hdf
 from Sensors.barom_therm_data_collection import temp_n_pres
 from Sensors.mag_data import mag_data
@@ -23,12 +22,9 @@ img = Image(np.zeros((512, 512, 3)))  # blank image
 cur_day = datetime.date.today()  # keep track of current day
 cameraoff = False  # when True camera will not take picutre during the day
 
-
-
 # Working directory and file
 wdir = os.getcwd()
 folder = cur_day.strftime('%y%B')
-#// folder_id = "1o4uRjhgtwmRvK-3zxdAHeIlSxOJW4nqL"  # ! this should not be necessary
 hdf_path = cur_day.strftime('%d_%m_%y.hdf5')  # ! this should be the file name and hdf_path should become a combination of folder and file when implemented onto raspi
 # todo 2 paths? the raspi and the one on crabyss
 
@@ -60,7 +56,8 @@ def upload_data():
     global hdf_path
     print('uploading data to')
     # todo os.system(f'rsync -ahP {hdf_path} *USER*@crabyss.engin.umich.edu:{directory to save}') 
-    #! ensure that the delete flag is here unless addressed seperately
+    # ! ensure that the delete flag is here unless addressed seperately
+
 
 def data_processing():
     global T, xrun, camera_period, cameraoff
@@ -93,11 +90,6 @@ schedule.every().day.at("08:00").do(cam_off)  # turn camera off after 8am
 schedule.every().day.at("20:00").do(cam_off)  # turn camera on after 8pm
 
 if __name__ == '__main__':
-    # run the program with period = XX sec
+    # runs any pending programs
     schedule.run_pending()
     time.sleep(1)
-    # schedule(timer, interval=2) # ! this wasnt used before?????
-    # //schedule(data_processing, interval=2)  # todo choose our intervals
-    # //run_loop(return_after=3)  # todo choose our intervals
-
-    # upload_file_to_drive(hdf_path, folder_id)   # todo our upload
