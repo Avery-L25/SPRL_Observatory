@@ -205,6 +205,9 @@ SPRL_Observatory/Data_processing/__pycache__
 SPRL_Observatory/Data_processing/transmission/__pycache__
 Extra_Unused
 
+# A complete testing folder
+SPRL_Observatory/Data_processing/transmission
+
 # types of files
 *.rules
 *.Identifier
