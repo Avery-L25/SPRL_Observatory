@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import os
-from datetime import date
+from datetime import date, datetime
 import numpy as np  # * testing
 import cv2  # type: ignore
 import h5py
@@ -128,3 +128,69 @@ def test3():
 # print(keys[0])
 # data = fr1['random_data'][()]
 # print(data)
+
+# region This is for testing the scheduling modules
+
+import schedule as sched
+from ischedule import run_loop, schedule
+import time 
+from datetime import datetime
+def time1():
+    z = 2
+    y= datetime.now()
+    print('this is test 1')
+    print(f'z = {z}')
+    # time.sleep(2)
+
+
+def time2():
+    y= datetime.now()
+    print('test 2')
+    # time.sleep(5)
+
+
+def switch():
+    global z
+    print('switch')
+    if z ==2:
+        z = 10
+    elif z == 10:
+        z = 2
+    else:
+        z =2
+
+z = 2
+x = 0
+l = 1
+
+
+
+
+lol = None
+
+if lol is None:
+    lol = 0
+elif lol < 12:
+    lol = 14
+elif lol >= 12:
+    lol = None
+
+
+
+
+okay = False
+
+while okay is True:
+
+    if x >= 6:
+        sched.cancel_job(time2)
+        sched.every(2).seconds.do(time1)
+        l = 2
+    else:
+        sched.cancel_job(time2)
+        sched.every(5).seconds.do(time2)
+        l = 5
+    sched.run_pending()
+    time.sleep(1)
+    x += 1
+    print(x)
