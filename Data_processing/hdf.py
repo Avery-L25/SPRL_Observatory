@@ -24,7 +24,7 @@ def build_hdf(date, gps, temp, pres, mag, img, file):
                          dtype='uint8', data=[img])
 
 
-def add_data(date, gps, temp, pres, mag, img, file):
+def add_data(date, gps, temp, pres, mag, img, file, flag):
     print('add data')
     with h5py.File(file, "a") as f:
         f["date"].resize((f["date"].shape[0] + 1), axis=0)
@@ -39,7 +39,7 @@ def add_data(date, gps, temp, pres, mag, img, file):
         f['magnetic field'][-1] = mag
 
         # adds photos and their appropriate timestamp
-        if utc_now.hour > 20 or utc_now.hour < 8:
+        if flag is True:  # if image was taken upload image
             i = f.require_group("images")
             i["date"].resize((i["date"].shape[0] + 1), axis=0)
             i['date'][-1] = date
@@ -47,13 +47,13 @@ def add_data(date, gps, temp, pres, mag, img, file):
             i["aurora img"].resize((i["aurora img"].shape[0] + 1), axis=0)
 
 
-def hdf(mag, pres, temp, gps, img, file):
+def hdf(mag, pres, temp, gps, img, file, flag):
     global utc_now
 
     d_t = np.datetime64('now').item().strftime('%Y_%m_%d_%H_%M_%S')
 
     utc_now = datetime.datetime.now(datetime.timezone.utc)
     if glob.glob("*.hdf5"):
-        add_data(d_t, gps, temp, pres, mag, img, file)
+        add_data(d_t, gps, temp, pres, mag, img, file, flag)
     else:
         build_hdf(d_t, gps, temp, pres, mag, img, file)
