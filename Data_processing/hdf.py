@@ -1,6 +1,7 @@
 import h5py
 import glob
 import numpy as np
+import datetime
 
 
 def build_hdf(date, gps, temp, pres, mag, img, file):
@@ -14,7 +15,12 @@ def build_hdf(date, gps, temp, pres, mag, img, file):
         f.create_dataset("pressure", maxshape=(None,), dtype='f', data=[pres])
         f.create_dataset("magnetic field", maxshape=(None, 3), dtype='f',
                          data=[mag])
-        f.create_dataset("aurora img", maxshape=(None, 512, 512, 3),
+
+        # create group for images and their own timestamps
+        i = f.require_group("images")
+        i.create_dataset("date", maxshape=(None,), dtype=h5py.string_dtype(),
+                         data=[date])
+        i.create_dataset("aurora img", maxshape=(None, 512, 512, 3),
                          dtype='uint8', data=[img])
 
 
@@ -31,12 +37,22 @@ def add_data(date, gps, temp, pres, mag, img, file):
         f['pressure'][-1] = pres
         f["magnetic field"].resize((f["magnetic field"].shape[0] + 1), axis=0)
         f['magnetic field'][-1] = mag
-        f["aurora img"].resize((f["aurora img"].shape[0] + 1), axis=0)
-        f['aurora img'][-1] = img
+
+        # adds photos and their appropriate timestamp
+        if utc_now.hour > 20 or utc_now.hour < 8:
+            i = f.require_group("images")
+            i["date"].resize((i["date"].shape[0] + 1), axis=0)
+            i['date'][-1] = date
+            i['aurora img'][-1] = img
+            i["aurora img"].resize((i["aurora img"].shape[0] + 1), axis=0)
 
 
 def hdf(mag, pres, temp, gps, img, file):
+    global utc_now
+
     d_t = np.datetime64('now').item().strftime('%Y_%m_%d_%H_%M_%S')
+
+    utc_now = datetime.datetime.now(datetime.timezone.utc)
     if glob.glob("*.hdf5"):
         add_data(d_t, gps, temp, pres, mag, img, file)
     else:
