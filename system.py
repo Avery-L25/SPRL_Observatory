@@ -4,15 +4,14 @@
 import os
 import datetime
 import time
+import glob
 import numpy as np
-#// from ischedule import run_loop, schedule
-import schedule
+import schedule  # // from ischedule import run_loop, schedule
 from Data_processing.image_processing import Image
 from Data_processing.hdf import hdf
 from Sensors.barom_therm_data_collection import temp_n_pres
 from Sensors.mag_data import mag_data
 from Sensors.camera.main import shot
-# from Sensors.camera.shot import shot # ! NOTE: This was the original for testing
 
 # Variable initialization
 T = 10  # When to take image
@@ -25,14 +24,14 @@ cameraoff = False  # when True camera will not take picutre during the day
 # Working directory and file
 wdir = os.getcwd()
 folder = cur_day.strftime('%y%B')
-hdf_path = cur_day.strftime('%d_%m_%y.hdf5')  # ! this should be the file name and hdf_path should become a combination of folder and file when implemented onto raspi
+hdf_file = cur_day.strftime('%d_%m_%y.hdf5')
 # todo 2 paths? the raspi and the one on crabyss
 
 
 def cam_off():  # Turn off the cam  # todo turn off camera during the dayS
     global cameraoff
     curtime = datetime.now()
-    if curtime.hour > 7 and curtime.hour < 15:
+    if curtime.hour > 7 and curtime.hour < 19:
         cameraoff = True
     else:
         cameraoff = False
@@ -53,14 +52,15 @@ def read_data(cam_flag):    # instruct sensors to read current data
 
 
 def upload_data():
-    global hdf_path
-    print('uploading data to')
+    global hdf_file  # ! add path on server
+    # if glob.glob("*.hdf5"):
+    print('uploading data to the CRABYSS')
     # todo os.system(f'rsync -ahP {hdf_path} *USER*@crabyss.engin.umich.edu:{directory to save}') 
     # ! ensure that the delete flag is here unless addressed seperately
 
 
 def data_processing():
-    global T, xrun, camera_period, cameraoff
+    global T, xrun, camera_period, cameraoff, hdf_file
     if cameraoff is True:
         cam_flag = False
     elif camera_period >= T:  # it the time to take picture
@@ -72,6 +72,7 @@ def data_processing():
         cam_flag = False  # ! can be moved to where the camera_period is updated
     mag, pres, temp, gps, img.img = read_data(bool(cam_flag))
     img.resize()
+    # Check if there us an aurora present #! replaced the timer() function
     is_aurora = img.aurora_detection()  # is there an aurora present
     if is_aurora is True:  # if yes, camera takes a photo every 10 seconds
         T = 10
@@ -79,7 +80,7 @@ def data_processing():
     elif is_aurora is False:  # if no, camera takes a photo every 5 minutes
         T = 300
         print('no aurora')
-    hdf(mag, pres, temp, gps, img.img)  # input data into database
+    hdf(mag, pres, temp, gps, img.img, hdf_file)  # input data into database
     # * live_plot.plotting({'x': mag[0],'y': mag[1],'z': mag[2]}, {'in': temp[1], 'out': temp[0]}, pres, img.img, is_aurora)
 
 
