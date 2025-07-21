@@ -18,27 +18,57 @@ T = 10  # When to take image
 xrun = 5  # todo how often to take data
 camera_period = 0  # a counter for camera's period
 img = Image(np.zeros((512, 512, 3)))  # blank image
-cur_day = datetime.date.today()  # keep track of current day
+cur_day = datetime.datetime.now(datetime.timezone.utc)  # keep track of current day
 cameraoff = False  # when True camera will not take picutre during the day
 
 # Working directory and file
 wdir = os.getcwd()
 folder = cur_day.strftime('%y%B')
-hdf_file = cur_day.strftime('%d_%m_%y.hdf5')
+if cur_day.hour >= 16:
+    hdf_file = cur_day.strftime('%d_%m_%y.hdf5')
+else:
+    cur_day = cur_day - datetime.timedelta(1)
+    hdf_file = cur_day.strftime('%d_%m_%y.hdf5')
 # todo 2 paths? the raspi and the one on crabyss
 
 
+def get_direcs():
+    '''
+    Calculates the working file name based on UTC time.
+    If it is after 4pm UTC a new file name is created for the current day.
+    If it is before 4pm UTC the file is the prior day.
+    '''
+    global folder, hdf_file, cur_day
+    now = datetime.datetime.now(datetime.timezone.utc)
+
+    folder = cur_day.strftime('%y%B')
+    if now.hour >= 16:
+        hdf_file = now.strftime('%d_%m_%y.hdf5')
+    else:
+        cur_day = now - datetime.timedelta(1)
+        hdf_file = cur_day.strftime('%d_%m_%y.hdf5')
+
+
 def cam_off():  # Turn off the cam  # todo turn off camera during the dayS
+    '''
+    Used to turn the camera on/off dependant on the time of day.
+    Currently on between 12pm and 7 pm if the function is called.
+    '''
+
     global cameraoff
     curtime = datetime.now()
-    if curtime.hour > 7 and curtime.hour < 19:
+    if curtime.hour > 7 and curtime.hour < 12:
         cameraoff = True
     else:
         cameraoff = False
 
 
-def read_data(cam_flag):    # instruct sensors to read current data
-    # None will be replaced to be the sensor's program
+def read_data(cam_flag):
+    '''
+    Runs all the sensors functions to collect data.
+    Tales pictures if the cam_flag is true.
+    '''
+
     mag = mag_data()
     temp, pres = temp_n_pres()
     gps = None  # todo complete gps code
@@ -52,6 +82,9 @@ def read_data(cam_flag):    # instruct sensors to read current data
 
 
 def upload_data():
+    '''
+    Upload data to the University of Michigans "CRABYSS" server.
+    '''
     global hdf_file  # ! add path on server
     # if glob.glob("*.hdf5"):
     print('uploading data to the CRABYSS')
@@ -60,6 +93,11 @@ def upload_data():
 
 
 def data_processing():
+    '''
+    Processes data from all sensors and writes it to hdf5 file.
+    Determines whether it is time to take a picture.
+    Detects an Aurora and updates the camera period accordingly.
+    '''
     global T, xrun, camera_period, cameraoff, hdf_file
     if cameraoff is True:
         cam_flag = False
