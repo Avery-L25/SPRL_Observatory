@@ -80,7 +80,8 @@ def data_processing():
     elif is_aurora is False:  # if no, camera takes a photo every 5 minutes
         T = 300
         print('no aurora')
-    hdf(mag, pres, temp, gps, img.img, hdf_file)  # input data into database
+    hdf(mag, pres, temp, gps, img.img, hdf_file, cam_flag)  # input data into database
+    cam_flag = False
     # * live_plot.plotting({'x': mag[0],'y': mag[1],'z': mag[2]}, {'in': temp[1], 'out': temp[0]}, pres, img.img, is_aurora)
 
 
