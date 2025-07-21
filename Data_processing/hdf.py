@@ -3,9 +3,9 @@ import glob
 import numpy as np
 
 
-def build_hdf(date, gps, temp, pres, mag, img, hdf_path):
+def build_hdf(date, gps, temp, pres, mag, img, file):
     print('build hdf')
-    with h5py.File(hdf_path, "w") as f:
+    with h5py.File(file, "w") as f:
         f.create_dataset("date", maxshape=(None,), dtype=h5py.string_dtype(),
                          data=[date])
         f.create_dataset("gps", maxshape=(None,), dtype='f', data=[gps])
@@ -18,9 +18,9 @@ def build_hdf(date, gps, temp, pres, mag, img, hdf_path):
                          dtype='uint8', data=[img])
 
 
-def add_data(date, gps, temp, pres, mag, img, hdf_path):
+def add_data(date, gps, temp, pres, mag, img, file):
     print('add data')
-    with h5py.File(hdf_path, "a") as f:
+    with h5py.File(file, "a") as f:
         f["date"].resize((f["date"].shape[0] + 1), axis=0)
         f['date'][-1] = date
         f["gps"].resize((f["gps"].shape[0] + 1), axis=0)
@@ -35,9 +35,9 @@ def add_data(date, gps, temp, pres, mag, img, hdf_path):
         f['aurora img'][-1] = img
 
 
-def hdf(mag, pres, temp, gps, img, hdf_path):
+def hdf(mag, pres, temp, gps, img, file):
     d_t = np.datetime64('now').item().strftime('%Y_%m_%d_%H_%M_%S')
     if glob.glob("*.hdf5"):
-        add_data(d_t, gps, temp, pres, mag, img)
+        add_data(d_t, gps, temp, pres, mag, img, file)
     else:
-        build_hdf(d_t, gps, temp, pres, mag, img)
+        build_hdf(d_t, gps, temp, pres, mag, img, file)
