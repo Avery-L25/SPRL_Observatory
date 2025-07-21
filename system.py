@@ -9,6 +9,7 @@ import numpy as np
 import schedule  # // from ischedule import run_loop, schedule
 from Data_processing.image_processing import Image
 from Data_processing.hdf import hdf
+from Data_processing.transmission.file_transmission_2 import upload_file_to_drive
 from Sensors.barom_therm_data_collection import temp_n_pres
 from Sensors.mag_data import mag_data
 from Sensors.camera.main import shot
@@ -18,7 +19,7 @@ T = 10  # When to take image
 xrun = 5  # todo how often to take data
 camera_period = 0  # a counter for camera's period
 img = Image(np.zeros((512, 512, 3)))  # blank image
-cur_day = datetime.datetime.now(datetime.timezone.utc)  # keep track of current day
+cur_day = datetime.datetime.now(datetime.timezone.utc)
 cameraoff = False  # when True camera will not take picutre during the day
 
 # Working directory and file
@@ -29,6 +30,11 @@ if cur_day.hour >= 16:
 else:
     cur_day = cur_day - datetime.timedelta(1)
     hdf_file = cur_day.strftime('%d_%m_%y.hdf5')
+
+# GOOGLE AUTHORIZATION
+folder_id = "1vgaHd2zrHlnLKV55_ARNKjABrqwS_hxM"  # Dan Wellings Server
+
+
 # todo 2 paths? the raspi and the one on crabyss
 
 
@@ -49,7 +55,7 @@ def get_direcs():
         hdf_file = cur_day.strftime('%d_%m_%y.hdf5')
 
 
-def cam_off():  # Turn off the cam  # todo turn off camera during the dayS
+def cam_off():  # Turn off the cam
     '''
     Used to turn the camera on/off dependant on the time of day.
     Currently on between 12pm and 7 pm if the function is called.
@@ -76,8 +82,7 @@ def read_data(cam_flag):
     if cam_flag:  # takes an image if the camera period is complete
         img = shot()  # ! check integration of proper shot()
     else:
-        img = np.zeros((512, 512, 3), dtype=np.uint8)  # ? can this be made into None and have no information saved???
-
+        img = np.zeros((512, 512, 3), dtype=np.uint8)
     return mag, pres, temp, gps, img
 
 
@@ -85,9 +90,10 @@ def upload_data():
     '''
     Upload data to the University of Michigans "CRABYSS" server.
     '''
-    global hdf_file  # ! add path on server
+    global hdf_file, folder_id  # ! add path on server
     # if glob.glob("*.hdf5"):
     print('uploading data to the CRABYSS')
+    upload_file_to_drive(hdf_file, folder_id)
     # todo os.system(f'rsync -ahP {hdf_path} *USER*@crabyss.engin.umich.edu:{directory to save}') 
     # ! ensure that the delete flag is here unless addressed seperately
 
@@ -107,10 +113,10 @@ def data_processing():
         img.pre = img.img
     else:
         camera_period += xrun  # update counter by the run period
-        cam_flag = False  # ! can be moved to where the camera_period is updated
+        cam_flag = False
     mag, pres, temp, gps, img.img = read_data(bool(cam_flag))
     img.resize()
-    # Check if there us an aurora present #! replaced the timer() function
+    # Check if there us an aurora present
     is_aurora = img.aurora_detection()  # is there an aurora present
     if is_aurora is True:  # if yes, camera takes a photo every 10 seconds
         T = 10
@@ -118,7 +124,7 @@ def data_processing():
     elif is_aurora is False:  # if no, camera takes a photo every 5 minutes
         T = 300
         print('no aurora')
-    hdf(mag, pres, temp, gps, img.img, hdf_file, cam_flag)  # input data into database
+    hdf(mag, pres, temp, gps, img.img, hdf_file, cam_flag)  # save data to hdf
     cam_flag = False
     # * live_plot.plotting({'x': mag[0],'y': mag[1],'z': mag[2]}, {'in': temp[1], 'out': temp[0]}, pres, img.img, is_aurora)
 
