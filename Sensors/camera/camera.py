@@ -2,19 +2,20 @@ import typing
 import toml
 from pathlib import Path
 from typing import Optional, Mapping, List, Dict
-from camera_zwo_asi.bindings import Controllable, Camera, get_nb_cameras, get_sdk_version
+from camera_zwo_asi.bindings import Controllable, get_nb_cameras, get_sdk_version# Camera,
+from camera_zwo_asi.bindings import Camera as BCamera
 from Sensors.camera.roi import ROI
 from Sensors.camera.image import Image
 
 
-class Camera(Camera):
+class Camera(BCamera):
     """
     Interface to a ASI ZWO Camera.
     Index: index of the camera, if several are plugged.
     To get the number of cameras detected, call
     camera_zwo_asi.get_nb_cameras().
 
-    Arguments:
+    Arguments:controllable
       index: index of the camera (use 0 if only one camera is plugged)
     """
 
