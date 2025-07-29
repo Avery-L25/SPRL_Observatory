@@ -38,6 +38,7 @@ def print_():
 
 
 def _shot():
+    ### Region
     parser = argparse.ArgumentParser("take pictures with a ZWO-ASI camera")
 
     # if several cameras are plugged, which to use ?
@@ -83,7 +84,8 @@ def _shot():
         index = 0
     print(f"opening camera {index}")
     camera = Camera(index)
-
+    
+    _CONFIG_FILE = "zwo_asi.toml"
     # is there a configuration file in the current directory?
     config_path = Path(os.getcwd()) / _CONFIG_FILE
     if config_path.is_file() and not args.noconfig:
@@ -118,10 +120,29 @@ def shot():
     is present in the current directory, the camera will first be configured
     using it. Call with '-help' for details.
     """
-    try:
-        _shot()
-    except Exception as e:
-        print(f"\n[ERROR]: {e}\n")
+    # open camera
+    index = 0
+    print(f"opening camera {index}")
+    camera = Camera(index)
+    
+    # configure camera
+    config_path = Path(os.getcwd()) / _CONFIG_FILE
+    print(f"configuring using {config_path}")
+    camera.configure_from_toml(config_path)
+
+    # taking the picture
+    print("taking picture")
+    image = camera.capture()
+    
+    # save picture
+    ### optional
+    
+    return image.get_image()
+    
+    #try:
+    #    _shot('--silent True --noconfig False')
+    #except Exception as e:
+    #    print(f"\n[ERROR]: {e}\n")
 
 
 def dump():
