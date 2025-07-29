@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 import nptyping as npt
 from pathlib import Path
-from bindings import ImageType
+from camera_zwo_asi.bindings import ImageType
 
 FlattenData = npt.NDArray[npt.Shape["1"], npt.UInt8]
 UINT8ImageData = npt.NDArray[npt.Shape["*,*"], npt.UInt8]

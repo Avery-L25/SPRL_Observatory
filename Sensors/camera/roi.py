@@ -2,7 +2,7 @@ import toml
 import typing
 import numpy as np
 from pathlib import Path
-import bindings
+import camera_zwo_asi.bindings as bindings
 from Sensors.camera.image import FlattenData, ImageData, Image, get_image
 
 

@@ -38,7 +38,7 @@ folder_id = "1vgaHd2zrHlnLKV55_ARNKjABrqwS_hxM"  # Dan Wellings Server
 # todo 2 paths? the raspi and the one on crabyss
 
 
-def get_direcs():
+def get_direcs():  # Get working file 
     '''
     Calculates the working file name based on UTC time.
     If it is after 4pm UTC a new file name is created for the current day.
@@ -65,11 +65,13 @@ def cam_off():  # Turn off the cam
     curtime = datetime.now()
     if curtime.hour > 7 and curtime.hour < 12:
         cameraoff = True
+        print('CAMERA OFF')
     else:
         cameraoff = False
+        print('CAMERA ON')
 
 
-def read_data(cam_flag):
+def read_data(cam_flag):  # Read data from sensors and camera
     '''
     Runs all the sensors functions to collect data.
     Tales pictures if the cam_flag is true.
@@ -86,7 +88,7 @@ def read_data(cam_flag):
     return mag, pres, temp, gps, img
 
 
-def upload_data():
+def upload_data():  # Upload data to Google Drive
     '''
     Upload data to the University of Michigans "CRABYSS" server.
     '''
@@ -98,7 +100,7 @@ def upload_data():
     # ! ensure that the delete flag is here unless addressed seperately
 
 
-def data_processing():
+def data_processing():  # Collects data, looks for Aurora, Makes HDF
     '''
     Processes data from all sensors and writes it to hdf5 file.
     Determines whether it is time to take a picture.
@@ -135,7 +137,7 @@ schedule.every().day.at("16:00").do(upload_data)  # upload hdf5 file at 4pm
 schedule.every().day.at("08:00").do(cam_off)  # turn camera off after 8am
 schedule.every().day.at("20:00").do(cam_off)  # turn camera on after 8pm
 
-if __name__ == '__main__':
+while __name__ == '__main__':
     # runs any pending programs
     schedule.run_pending()
     time.sleep(1)

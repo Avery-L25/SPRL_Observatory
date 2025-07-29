@@ -2,7 +2,7 @@ import typing
 import toml
 from pathlib import Path
 from typing import Optional, Mapping, List, Dict
-from bindings import Controllable, Camera, get_nb_cameras, get_sdk_version
+from camera_zwo_asi.bindings import Controllable, Camera, get_nb_cameras, get_sdk_version
 from Sensors.camera.roi import ROI
 from Sensors.camera.image import Image
 

@@ -24,7 +24,7 @@ def upload_file_to_drive(file_name, folder_id):
     """Uploads a file to Google Drive in the specified folder."""
     creds = None
     token_path = 'token_2.json'
-    creds_path = 'credentials.json'
+    creds_path = '/home/sprlobs/SPRL_Observatory/Data_processing/transmission/credentials.json'
 
     if os.path.exists(token_path):
         creds = Credentials.from_authorized_user_file(token_path, SCOPES)
