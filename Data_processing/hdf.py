@@ -53,7 +53,7 @@ def hdf(mag, pres, temp, gps, img, file, flag):
     d_t = np.datetime64('now').item().strftime('%Y_%m_%d_%H_%M_%S')
 
     utc_now = datetime.datetime.now(datetime.timezone.utc)
-    if glob.glob("*.hdf5"):
+    if glob.glob(file):
         add_data(d_t, gps, temp, pres, mag, img, file, flag)
     else:
         build_hdf(d_t, gps, temp, pres, mag, img, file)
