@@ -25,7 +25,7 @@ cameraoff = False  # when True camera will not take picutre during the day
 # Working directory and file
 wdir = os.getcwd()
 folder = cur_day.strftime('%y%B')
-if cur_day.hour >= 16:
+if cur_day.hour >= 20:
     hdf_file = cur_day.strftime('%d_%m_%y.hdf5')
 else:
     cur_day = cur_day - datetime.timedelta(1)
@@ -47,8 +47,8 @@ def get_direcs():  # Get working file
     global folder, hdf_file, cur_day
     now = datetime.datetime.now(datetime.timezone.utc)
 
-    folder = cur_day.strftime('%y%B')
-    if now.hour >= 16:
+    folder = now.strftime('%y%B')
+    if now.hour >= 20:
         hdf_file = now.strftime('%d_%m_%y.hdf5')
     else:
         cur_day = now - datetime.timedelta(1)
@@ -96,6 +96,7 @@ def upload_data():  # Upload data to Google Drive
     # if glob.glob("*.hdf5"):
     print('uploading data to the CRABYSS')
     upload_file_to_drive(hdf_file, folder_id)
+    get_direcs()
     # todo os.system(f'rsync -ahP {hdf_path} *USER*@crabyss.engin.umich.edu:{directory to save}') 
     # ! ensure that the delete flag is here unless addressed seperately
 
@@ -116,6 +117,11 @@ def data_processing():  # Collects data, looks for Aurora, Makes HDF
     else:
         camera_period += xrun  # update counter by the run period
         cam_flag = False
+        
+    #for testing
+    print(f"T = {T}\ncamera period = {camera_period}\ncamflag = {cam_flag}")
+    
+    
     mag, pres, temp, gps, img.img = read_data(bool(cam_flag))
     img.resize()
     # Check if there us an aurora present
@@ -124,7 +130,7 @@ def data_processing():  # Collects data, looks for Aurora, Makes HDF
         T = 10
         print('aurora present')
     elif is_aurora is False:  # if no, camera takes a photo every 5 minutes
-        T = 300
+        T = 10
         print('no aurora')
     hdf(mag, pres, temp, gps, img.img, hdf_file, cam_flag)  # save data to hdf
     cam_flag = False
@@ -133,7 +139,7 @@ def data_processing():  # Collects data, looks for Aurora, Makes HDF
 
 # initializes scheduling
 schedule.every(xrun).seconds.do(data_processing)  # collect data every 'xrun'
-schedule.every().day.at("16:00").do(upload_data)  # upload hdf5 file at 4pm
+schedule.every().day.at("16:10").do(upload_data)  # upload hdf5 file at 4pm
 schedule.every().day.at("08:00").do(cam_off)  # turn camera off after 8am
 schedule.every().day.at("20:00").do(cam_off)  # turn camera on after 8pm
 
@@ -141,3 +147,16 @@ while __name__ == '__main__':
     # runs any pending programs
     schedule.run_pending()
     time.sleep(1)
+    
+    
+    
+    
+    
+    
+    
+    if cameraoff is True:
+        x=1
+    elif camera_period >= T:  # it the time to take picture
+        x=2
+    else:
+        x=3
