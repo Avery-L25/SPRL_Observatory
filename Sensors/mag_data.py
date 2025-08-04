@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # Create for 2024 UM-SPRL MDP Cohort
 
 import spidev  # Not included in std library, need to download onto RPi

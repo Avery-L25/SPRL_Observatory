@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import toml
 import typing
 import numpy as np
