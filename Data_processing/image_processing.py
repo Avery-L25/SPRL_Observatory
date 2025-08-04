@@ -41,9 +41,7 @@ class Image(object):
         mask1 = cv2.compare(0.95*g, 1.0*b, cv2.CMP_GT)
         mask2 = cv2.compare(0.95*g, 1.0*r, cv2.CMP_GT)
         maskgreendominant = cv2.bitwise_and(mask1, mask2)
-        verygreen = cv2.bitwise_and(maskgreendominant,
-                                    cv2.bitwise_not(cv2.bitwise_and(
-                                        maskgrratio, maskgbratio)))
+        verygreen = cv2.bitwise_and(maskgreendominant, cv2.bitwise_not( cv2.bitwise_and(maskgrratio, maskgbratio)))
 
         masked_img = cv2.bitwise_and(self.img, self.img, mask=verygreen)
         masked_pre = cv2.bitwise_and(self.pre, self.pre, mask=verygreen)
@@ -53,5 +51,5 @@ class Image(object):
         # Use mse to determine the changes in time
         mse = np.linalg.norm(masked_img-masked_pre)
         cv2.imwrite('masked.jpg', masked_img)
-
+        
         return bool(mse)
