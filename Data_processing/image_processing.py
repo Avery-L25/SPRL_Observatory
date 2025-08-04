@@ -4,10 +4,21 @@ import cv2
 import numpy as np
 
 
-class Image:
+class Image(object):
     def __init__(self, img):  # "img" is the current image, "pre" is the one
         self.img = img        # from previous timstamp
         self.pre = img
+
+        self.masked = img
+        self.premask = img
+        # not necessary
+        self.black = np.zeros((512, 512, 3))
+        self.red = np.zeros((512, 512, 3))
+        self.red[:, :, 0] = 255
+        self.green = np.zeros((512, 512, 3))
+        self.green[:, :, 1] = 255
+        self.blue = np.zeros((512, 512, 3))
+        self.blue[:, :, 2] = 255
 
     def resize(self):   # resize any size of image in "self.img" to be 512x512
         self.img = cv2.resize(self.img, (512, 512))
@@ -37,6 +48,8 @@ class Image:
         masked_img = cv2.bitwise_and(self.img, self.img, mask=verygreen)
         masked_pre = cv2.bitwise_and(self.pre, self.pre, mask=verygreen)
 
+        self.masked = masked_img
+        self.premask = masked_pre
         # Use mse to determine the changes in time
         mse = np.linalg.norm(masked_img-masked_pre)
         cv2.imwrite('masked.jpg', masked_img)

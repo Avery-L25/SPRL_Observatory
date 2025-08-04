@@ -4,9 +4,8 @@
 import os
 import datetime
 import time
-import glob
 import numpy as np
-import schedule  # // from ischedule import run_loop, schedule
+import schedule
 from Data_processing.image_processing import Image
 from Data_processing.hdf import hdf
 from Data_processing.transmission.file_transmission_2 import upload_file_to_drive
@@ -83,15 +82,14 @@ def read_data(cam_flag):  # Read data from sensors and camera
     gps = None  # todo complete gps code
 
     if cam_flag:  # takes an image if the camera period is complete
-        img = shot()  # ! check integration of proper shot()
-        
+        img = shot()
     else:
         img = np.zeros((512, 512, 3), dtype=np.uint8)
     return mag, pres, temp, gps, img
 
 
 def check_aurora(img):
-    
+
     global T
     # Check if there us an aurora present
     is_aurora = img.aurora_detection()  # is there an aurora present
@@ -101,7 +99,6 @@ def check_aurora(img):
     elif is_aurora is False:  # if no, camera takes a photo every 5 minutes
         T = 10
         print('no aurora')
-    
 
 
 def upload_data():  # Upload data to Google Drive
@@ -113,8 +110,6 @@ def upload_data():  # Upload data to Google Drive
     print('uploading data to the CRABYSS')
     upload_file_to_drive(hdf_file, folder_id)
     get_direcs()
-    # todo os.system(f'rsync -ahP {hdf_path} *USER*@crabyss.engin.umich.edu:{directory to save}') 
-    # ! ensure that the delete flag is here unless addressed seperately
 
 
 def data_processing():  # Collects data, looks for Aurora, Makes HDF
@@ -133,17 +128,16 @@ def data_processing():  # Collects data, looks for Aurora, Makes HDF
     else:
         camera_period += xrun  # update counter by the run period
         cam_flag = False
-        
-    #for testing
+
+    # for testing
     print(f"T = {T}\ncamera period = {camera_period}\ncamflag = {cam_flag}")
-    
-    
+
     mag, pres, temp, gps, img.img = read_data(bool(cam_flag))
     img.resize()
     if cam_flag is True:
         check_aurora(img)
         img.pre = img.img
-    
+
     hdf(mag, pres, temp, gps, img.img, hdf_file, cam_flag)  # save data to hdf
     cam_flag = False
     # * live_plot.plotting({'x': mag[0],'y': mag[1],'z': mag[2]}, {'in': temp[1], 'out': temp[0]}, pres, img.img, is_aurora)
@@ -151,7 +145,7 @@ def data_processing():  # Collects data, looks for Aurora, Makes HDF
 
 # initializes scheduling
 schedule.every(xrun).seconds.do(data_processing)  # collect data every 'xrun'
-schedule.every().day.at("16:10").do(upload_data)  # upload hdf5 file at 4pm
+schedule.every().day.at("16:00").do(upload_data)  # upload hdf5 file at 4pm
 schedule.every().day.at("08:00").do(cam_off)  # turn camera off after 8am
 schedule.every().day.at("20:00").do(cam_off)  # turn camera on after 8pm
 
@@ -159,16 +153,3 @@ while __name__ == '__main__':
     # runs any pending programs
     schedule.run_pending()
     time.sleep(1)
-    
-    
-    
-    
-    
-    
-    
-    if cameraoff is True:
-        x=1
-    elif camera_period >= T:  # it the time to take picture
-        x=2
-    else:
-        x=3
