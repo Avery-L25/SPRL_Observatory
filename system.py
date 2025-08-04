@@ -83,9 +83,24 @@ def read_data(cam_flag):  # Read data from sensors and camera
 
     if cam_flag:  # takes an image if the camera period is complete
         img = shot()  # ! check integration of proper shot()
+        
     else:
         img = np.zeros((512, 512, 3), dtype=np.uint8)
     return mag, pres, temp, gps, img
+
+
+def check_aurora(img):
+    
+    global T
+    # Check if there us an aurora present
+    is_aurora = img.aurora_detection()  # is there an aurora present
+    if is_aurora is True:  # if yes, camera takes a photo every 10 seconds
+        T = 10
+        print('aurora present')
+    elif is_aurora is False:  # if no, camera takes a photo every 5 minutes
+        T = 10
+        print('no aurora')
+    
 
 
 def upload_data():  # Upload data to Google Drive
@@ -113,7 +128,7 @@ def data_processing():  # Collects data, looks for Aurora, Makes HDF
     elif camera_period >= T:  # it the time to take picture
         camera_period = 0
         cam_flag = True
-        img.pre = img.img
+        # img.pre = img.img
     else:
         camera_period += xrun  # update counter by the run period
         cam_flag = False
@@ -124,14 +139,10 @@ def data_processing():  # Collects data, looks for Aurora, Makes HDF
     
     mag, pres, temp, gps, img.img = read_data(bool(cam_flag))
     img.resize()
-    # Check if there us an aurora present
-    is_aurora = img.aurora_detection()  # is there an aurora present
-    if is_aurora is True:  # if yes, camera takes a photo every 10 seconds
-        T = 10
-        print('aurora present')
-    elif is_aurora is False:  # if no, camera takes a photo every 5 minutes
-        T = 10
-        print('no aurora')
+    if cam_flag is True:
+        check_aurora(img)
+        img.pre = img.img
+    
     hdf(mag, pres, temp, gps, img.img, hdf_file, cam_flag)  # save data to hdf
     cam_flag = False
     # * live_plot.plotting({'x': mag[0],'y': mag[1],'z': mag[2]}, {'in': temp[1], 'out': temp[0]}, pres, img.img, is_aurora)
