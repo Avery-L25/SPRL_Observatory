@@ -38,7 +38,7 @@ folder_id = "1vgaHd2zrHlnLKV55_ARNKjABrqwS_hxM"  # Dan Wellings Server
 # todo 2 paths? the raspi and the one on crabyss
 
 
-def get_direcs():  # Get working file 
+def get_direcs():  # Get working file
     '''
     Calculates the working file name based on UTC time.
     If it is after 4pm UTC a new file name is created for the current day.
@@ -61,13 +61,14 @@ def cam_off():  # Turn off the cam
     Currently on between 12pm and 7 pm if the function is called.
     '''
 
-    global cameraoff
+    global cameraoff, camera_period
     curtime = datetime.now()
     if curtime.hour > 7 and curtime.hour < 12:
         cameraoff = True
         print('CAMERA OFF')
     else:
         cameraoff = False
+        camera_period = 300
         print('CAMERA ON')
 
 
