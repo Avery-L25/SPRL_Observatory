@@ -33,14 +33,11 @@ def read_data(cam_flag):  # Read data from sensors and camera
 
 def check_aurora(img):
 
-    global T
     # Check if there us an aurora present
     is_aurora = img.aurora_detection()  # is there an aurora present
     if is_aurora is True:  # if yes, camera takes a photo every 10 seconds
-        T = 10
         print('aurora present')
     elif is_aurora is False:  # if no, camera takes a photo every 5 minutes
-        T = 10
         print('no aurora')
 
 
@@ -52,12 +49,13 @@ def data_processing():  # Collects data, looks for Aurora, Makes HDF
     '''
     global x
     cam_flag = True
-    print(f"T = {T}\ncamera period = {x}\ncamflag = {cam_flag}")
+    print(f"camera period = {x}\ncamflag = {cam_flag}")
     x += 1
     img.img = read_data(bool(cam_flag))
     img.resize()
     check_aurora(img)
-    img.pre = img.img
+    display_grid(img)
+    
 
 
 def display_grid(img):
@@ -72,6 +70,13 @@ def display_grid(img):
     # cv2.waitKey(10000)
     fig, ax = plt.subplots(2, 2)
     ax[0, 0].imshow(img.img)
+    ax[0, 0].set_title('current image')
+
     ax[0, 1].imshow(img.pre)
-    ax[1, 0].imshow(img.black)
-    ax[1, 1].imshow(img.masked)
+    ax[0, 1].set_title('previous image')
+    ax[1, 0].imshow(img.masked)
+    ax[1, 0].set_title('current mask')
+    ax[1, 1].imshow(img.premask)
+    ax[1, 1].set_title('previous mask')
+    fig.show()
+    img.pre = img.img
