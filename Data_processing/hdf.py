@@ -24,8 +24,8 @@ def build_hdf(date, gps, temp, pres, mag, img, file):
                          data=[date])
         i.create_dataset("aurora img", maxshape=(None, 512, 512, 3),
                          dtype='uint8', data=[img])
-        i.create_dataset("aurora flag", maxshape=(None,),
-                         dtype=h5py.string_dtype(), data="Start of File")
+        i.create_dataset("aurora flag", maxshape=(None,), dtype=h5py.string_dtype(),
+                         data=['Start of file'])
 
 
 def add_data(date, gps, temp, pres, mag, img, file, camflag, aurflag):

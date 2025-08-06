@@ -15,7 +15,7 @@ from Sensors.camera.main import shot
 
 # Variable initialization
 T = 10  # When to take image
-camera_period = 0  # a counter for camera's period
+camera_period = 300  # a counter for camera's period
 img = Image(np.zeros((512, 512, 3)))  # blank image
 cur_day = datetime.datetime.now(datetime.timezone.utc)
 cameraoff = False  # when True camera will not take picutre during the day
@@ -42,15 +42,20 @@ def get_direcs():  # Get working file
     If it is after 4pm UTC a new file name is created for the current day.
     If it is before 4pm UTC the file is the prior day.
     '''
-    global folder, hdf_file, cur_day
+    global folder, hdf_file, cur_day, old_file
     now = datetime.datetime.now(datetime.timezone.utc)
-
+    cur_day = now - datetime.timedelta(1)
+    old_day = now - datetime.timedelta(2)
+    
     folder = now.strftime('%y%B')
     if now.hour >= 20:
         hdf_file = now.strftime('%d_%m_%y.hdf5')
+        old_file = old_day.strftime('%d_%m_%y.hdf5')
     else:
         cur_day = now - datetime.timedelta(1)
+        older_day = cur_day - datetime.timedelta(2)
         hdf_file = cur_day.strftime('%d_%m_%y.hdf5')
+        old_file = older_day.strftime('%d_%m_%y.hdf5')
 
 
 def cam_off():  # Turn off the cam
@@ -106,11 +111,11 @@ def upload_data():  # Upload data to Google Drive
     '''
     Upload data to the University of Michigans "CRABYSS" server.
     '''
-    global hdf_file, folder_id  # ! add path on server
+    global hdf_file, folder_id, old_file # ! add path on server
     # if glob.glob("*.hdf5"):
     print('uploading data to the ... google drive')
     upload_file_to_drive(hdf_file, folder_id)
-    # os.remove(hdf_file)
+    os.remove(old_file)
     get_direcs()
 
     # * print("UPLOADING TO THE CRABYSS")
@@ -142,11 +147,13 @@ def data_processing():  # Collects data, looks for Aurora, Makes HDF
     if cam_flag is True:
         is_aurora = check_aurora(img)
         img.pre = img.img
-
+    else:
+        is_aurora = False
     hdf(mag, pres, temp, gps, img.img, hdf_file, cam_flag, is_aurora)  # save data to hdf
     cam_flag = False
     # * live_plot.plotting({'x': mag[0],'y': mag[1],'z': mag[2]}, {'in': temp[1], 'out': temp[0]}, pres, img.img, is_aurora)
 
+get_direcs()
 
 # initializes scheduling
 schedule.every(5).seconds.do(data_processing)  # collect data every 5 seconds
