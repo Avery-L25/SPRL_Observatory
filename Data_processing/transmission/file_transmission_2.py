@@ -46,16 +46,17 @@ def upload_file_to_drive(file_name, folder_id):
     try:
         service = build("drive", "v3", credentials=creds)
 
-        file_metadata = {
-            "name": file_name,
-            "parents": [folder_id],
-        }
-        media = MediaFileUpload(file_name, mimetype="application/x-hdf5")
-        file = service.files().create(
-            body=file_metadata, media_body=media, fields="id",
-            supportsAllDrives=True
-        ).execute()
-
+        file_metadata = {"name": file_name, "parents": [folder_id]}
+        media = MediaFileUpload(
+            file_name, mimetype="application/x-hdf5", resumable=True
+        )
+        
+        file = (
+            service.files()
+            .create(body=file_metadata, media_body=media, fields="id",
+                    supportsAllDrives=True)
+            .execute()
+        )
         print(f"File ID: {file['id']} uploaded successfully to folder"
               f"{folder_id}.")
     except HttpError as error:
