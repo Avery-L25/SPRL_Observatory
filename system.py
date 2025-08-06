@@ -107,9 +107,14 @@ def upload_data():  # Upload data to Google Drive
     '''
     global hdf_file, folder_id  # ! add path on server
     # if glob.glob("*.hdf5"):
-    print('uploading data to the CRABYSS')
+    print('uploading data to the ... google drive')
     upload_file_to_drive(hdf_file, folder_id)
+    # os.remove(hdf_file)
     get_direcs()
+
+    # * print("UPLOADING TO THE CRABYSS")
+    # todo os.system(f'rsync -ahP {hdf_path} *USER*@crabyss.engin.umich.edu:{directory to save}') 
+    # ! ensure that the delete flag is here unless addressed seperately
 
 
 def data_processing():  # Collects data, looks for Aurora, Makes HDF
