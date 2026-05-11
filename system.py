@@ -30,10 +30,10 @@ else:
     hdf_file = cur_day.strftime('%d_%m_%y.hdf5')
 
 # GOOGLE AUTHORIZATION
-folder_id = "1vgaHd2zrHlnLKV55_ARNKjABrqwS_hxM"  # Dan Wellings Server
 
 
-# todo 2 paths? the raspi and the one on crabyss
+
+# todo 2 paths? the raspi and the one on 
 
 
 def get_direcs():  # Get working file
@@ -109,7 +109,7 @@ def check_aurora(img):
 
 def upload_data():  # Upload data to Google Drive
     '''
-    Upload data to the University of Michigans "CRABYSS" server.
+    Upload data to the 
     '''
     global hdf_file, folder_id, old_file # ! add path on server
     # if glob.glob("*.hdf5"):
@@ -118,8 +118,7 @@ def upload_data():  # Upload data to Google Drive
     os.remove(old_file)
     get_direcs()
 
-    # * print("UPLOADING TO THE CRABYSS")
-    # todo os.system(f'rsync -ahP {hdf_path} *USER*@crabyss.engin.umich.edu:{directory to save}')
+
     # ! ensure that the delete flag is here unless addressed seperately
 
 
