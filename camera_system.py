@@ -5,9 +5,6 @@ import os
 import sys
 import datetime
 from suntime import Sun
-from timezonefinder import TimezoneFinder # Find timezone from lat/lon
-from dateutil import tz  # Using tz information in datetime
-import pytz
 import time
 import schedule
 
@@ -63,19 +60,16 @@ def get_direcs():  # Get working file
         old_file = older_day.strftime('%d_%m_%y.hdf5')
 
 
-def get_sun(lati = 42.279594, long = -83.732124):  # Get working file
+def get_sun(lati=42.279594, long=-83.732124):  # Get working file
     '''
     Calculates the next instance of Sunrise/Sunset using latitude and longitude
     Returns the next time as a datetime.datetime
     Returns the type of event as a string; "Sunrise" or "Sunset"
     time, sunXXX = get_sun(lat, lon)
     '''
-    # object creation: auto find timezone
-    obj = TimezoneFinder()
 
     # Find Conditions (lat/lon of station)
-    tzone = obj.timezone_at(lng=long, lat=lati)
-    sun = Sun(a2_lat, a2_lon)
+    sun = Sun(lati, long)
     cur = datetime.datetime.now(datetime.timezone.utc)
     tmrw = cur + datetime.timedelta(1)
     yest = cur - datetime.timedelta(1)
@@ -119,8 +113,6 @@ def get_sun(lati = 42.279594, long = -83.732124):  # Get working file
           sun_does_whaaat, ".\n")
     
     return next_event, sun_does_whaaat
-    
-
 
 
 def update_jobs():  # Turn off the cam
@@ -167,7 +159,6 @@ def update_jobs():  # Turn off the cam
         print('CAMERA OFF\n')
     else:
         print(f"Error with collecting next sun event type")
-
 
 
 def check_aurora(img):

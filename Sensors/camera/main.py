@@ -3,7 +3,7 @@
 import os
 import argparse
 from pathlib import Path
-from yoopercam import Camera
+from Sensors.camera.yoopercam import Camera
 from camera_zwo_asi.bindings import get_nb_cameras, create_udev_file
 
 _CONFIG_FILE = "zwo_asi.toml"

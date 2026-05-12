@@ -9,6 +9,8 @@ import schedule
 from Data_processing.image_processing import Image
 from Data_processing.hdf import hdf
 from Data_processing.transmission.file_transmission_2 import upload_file_to_drive
+from Data_processing.visualizer import Live_plotting
+
 from Sensors.barom_therm_data_collection import temp_n_pres
 from Sensors.mag_data import mag_data
 from Sensors.camera.main import shot
@@ -19,6 +21,7 @@ camera_period = 300  # a counter for camera's period
 img = Image(np.zeros((512, 512, 3)))  # blank image
 cur_day = datetime.datetime.now(datetime.timezone.utc)
 cameraoff = False  # when True camera will not take picutre during the day
+# ! live_plot = Live_plotting()
 
 # Working directory and file
 wdir = os.getcwd()
@@ -128,7 +131,7 @@ def data_processing():  # Collects data, looks for Aurora, Makes HDF
     Determines whether it is time to take a picture.
     Detects an Aurora and updates the camera period accordingly.
     '''
-    global T, camera_period, cameraoff, hdf_file
+    global T, camera_period, cameraoff, hdf_file # ! live_plot
     if cameraoff is True:
         cam_flag = False
     elif camera_period >= T:  # it the time to take picture
@@ -150,7 +153,7 @@ def data_processing():  # Collects data, looks for Aurora, Makes HDF
         is_aurora = False
     hdf(mag, pres, temp, gps, img.img, hdf_file, cam_flag, is_aurora)  # save data to hdf
     cam_flag = False
-    # * live_plot.plotting({'x': mag[0],'y': mag[1],'z': mag[2]}, {'in': temp[1], 'out': temp[0]}, pres, img.img, is_aurora)
+    # ! live_plot.plotting({'x': mag[0],'y': mag[1],'z': mag[2]}, {'in': temp[1], 'out': temp[0]}, pres, img.img, is_aurora)
 
 get_direcs()
 
