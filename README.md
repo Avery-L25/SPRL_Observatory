@@ -5,12 +5,11 @@ Data collection from a magnetometer, thermometer, and barometer.
 File management to upload to Google Drive.
 
 ## Hardware requirements
-Ongoing decisions
------------
+_Ongoing decisions_
 RaspberryPi with Rasbian installed
 ZWO ASI Camera
 Chip based magnetometer
-----------
+
 
 ## Installation/Setup
 Installation Script in progress.
