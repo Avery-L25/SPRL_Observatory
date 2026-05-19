@@ -58,7 +58,8 @@ NC='\033[0m'
 # ============================================
 # Project Vars
 PROJECT_NAME="SPRL_Observatory"
-PROJECT_DIR="/opt/${PROJECT_NAME}"
+USERNAME=yooperobs
+PROJECT_DIR="/home/${USERNAME}/${PROJECT_NAME}"
 VENV_NAME="venv"
 VENV_DIR="${PROJECT_DIR}/$VENV_NAME"
 GIT_REPO="https://github.com/Avery-L25/$PROJECT_NAME.git"
