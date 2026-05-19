@@ -208,12 +208,12 @@ Extra_Unused
 # A complete testing folder
 SPRL_Observatory/Data_processing/transmission
 SPRL_Observatory/Data_processing/transmission
+Setup
 
 # types of files
 *.rules
 *.Identifier
 *.Zone
-*.txt
 *.csv
 *.hdf5
 *.jpg
@@ -221,3 +221,5 @@ SPRL_Observatory/Data_processing/transmission
 *.png
 *.h5py
 *.json
+*.h5py
+*.h5

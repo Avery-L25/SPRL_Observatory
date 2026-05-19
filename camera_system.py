@@ -244,4 +244,4 @@ while __name__ == '__main__':
     # runs any pending programs
     schedule.run_pending()
     time.sleep(1)
-    sys.exit()
+    
