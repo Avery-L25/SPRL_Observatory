@@ -92,10 +92,11 @@ log_error() {
 # Upgrade system with necessary packages
 # ============================================
 if ! $dry_run; then
+    log_error "This process was stopped as it was not a dry run and the document is still in development"
     exit
 else
-    log_error "This is a dry run testing purposes!"
-    sleep sleep_count
+    log_success "This is a dry run testing purposes!"
+    sleep $sleep_count
 fi
 
 # 1: Update and Upgrade
@@ -132,29 +133,30 @@ fi
 log_info "Setting up Git Repository: \"$PROJECT_NAME\""
 if !  $dry_run; then
     if [ -d "${PROJECT_DIR}/.git" ]; then
-        log_info "Repository exists, continuing install."
+        log_error "Repository exists, continuing install."
     else
-        log_info "Cloning repository."
         sudo git clone "${GIT_REPO}" "${PROJECT_DIR}"
+        log_success "Repository Cloned"
     fi
 fi
 
 # 2: Create virtual Environment
-log_info "Creating virtual python environmet $"
+log_info "Creating virtual python environment"
 if !  $dry_run; then
     if [ -d "${VENV_DIR}" ]; then
-        log_info "Virtual Environment \"$VENV_NAME\" exists, continuing install."
+        log_error "Virtual Environment \"$VENV_NAME\" exists, continuing install."
     else
-        log_info "Cloning repository."
         sudo python -m venv "${VENV_DIR}"
+        log_success "Succesfully created ${VENV_NAME}"
     fi
 fi
 
 # 3: Install Libraries
 log_info "Installing libaries for YooperNET from $PYTHON_REQS"
 if !  $dry_run; then
-    log_info "Cloning repository."
+    source $VENV_DIR/bin/activate
     pip install -r $PYTHON_REQS
+    log_success "Successfully installed python libraries"
 fi
 
 # TODO: Make section that assigns files to system (ie. yoopercam when called)
