@@ -9,8 +9,21 @@
 #! chmod for privilege 
 # ============================================
 
-set -e # exit on ERROR
+# ============================================
+# Preparing to work with three scripts of the YooperNET Observatory
+# ============================================
+# The Camera, Magnetomer/Sensor, and File Manager Scripts will be colored as
+# Red, Green, and Blue Respectively
 
+# Color output
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+RED='\033[0;31m'
+NC='\033[0m'
+BOLD='\033[1m'
+
+set -e # exit on ERROR
+dry_run=true
 HELP_TEXT="
 Usage: bash getpython.sh [--version VERSION]
 
@@ -28,28 +41,21 @@ while [[ "$#" -gt 0 ]]; do
     echo "$HELP_TEXT"
     exit 0
     ;;
+    --real-run) dry_run=false; echo "$#"; shift 1;;
     --version) VERSION="$2"; shift 2 ;;
-    *) echo "Unknown option: $1" ;;
+    *) echo "Unknown option: $1" && exit 0;;
   esac
 done
 
 ### TESTING STUFFFFFFF
 echo $VERSION
-dry_run=true
+if [ "$1" = "--real-run" ] || [ "$2" = "--real-run" ]; then
+    printf "${BOLD}${RED}This is dry run, no actual actions will be performed. Use this for testing installation script.${NC}\n"
+    dry_run=false
+fi
 sleep_count=1
 echo  dry_run = $dry_run
-
-# ============================================
-# Preparing to work with three scripts of the YooperNET Observatory
-# ============================================
-# The Camera, Magnetomer/Sensor, and File Manager Scripts will be colored as
-# Red, Green, and Blue Respectively
-
-# Color output
-GREEN='\033[0;32m'
-BLUE='\033[0;34m'
-RED='\033[0;31m'
-NC='\033[0m'
+exit
 
 
 # ============================================
@@ -72,7 +78,6 @@ PYTHON_REQS="requirements.txt"
 # Services / automation scripts
 SERVICEFILE="yoopernet.service"
 STARTER_SCRIPT="startup.sh"
-
 
 # Helpful Functions
 echo -e "\n ${BLUE}Log information will be output as blue${NC} \n $1"
