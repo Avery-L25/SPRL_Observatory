@@ -55,7 +55,6 @@ if [ "$1" = "--real-run" ] || [ "$2" = "--real-run" ]; then
 fi
 sleep_count=1
 echo  dry_run = $dry_run
-exit
 
 
 # ============================================
@@ -64,7 +63,7 @@ exit
 # ============================================
 # Project Vars
 PROJECT_NAME="SPRL_Observatory"
-USERNAME=yooperobs
+USERNAME="yoopernet"
 PROJECT_DIR="/home/${USERNAME}/${PROJECT_NAME}"
 VENV_NAME="venv"
 VENV_DIR="${PROJECT_DIR}/$VENV_NAME"
@@ -98,21 +97,21 @@ log_error() {
 # Upgrade system with necessary packages
 # ============================================
 if ! $dry_run; then
-    log_error "This process was stopped as it was not a dry run and the document is still in development"
-    exit
+    log_error "THIS IS A REAL RUN! CODE IS IN DEVELOPMENT!"
+    sleep 10
 else
     log_success "This is a dry run testing purposes!"
     sleep $sleep_count
 fi
 
 # 1: Update and Upgrade
-log_info "Upgrade"
+log_info "Update"
 if ! $dry_run; then
-    sudo apt-get upgrade 
+    sudo apt-get update 
 fi
-log_info  "Update"
+log_info  "Upgrade"
 if ! $dry_run; then
-    sudo apt-get update -y
+    sudo apt-get upgrade -y
 fi
 
 # 2: Get dependencies
@@ -136,10 +135,10 @@ fi
 # ============================================
 
 # 1: Fetch Repository
-log_info "Setting up Git Repository: \"$PROJECT_NAME\""
+log_info "Setting up Git Repository at: \"$PROJECT_DIR\""
 if !  $dry_run; then
     if [ -d "${PROJECT_DIR}/.git" ]; then
-        log_error "Repository exists, continuing install."
+        log_info "Repository exists, continuing install."
     else
         sudo git clone "${GIT_REPO}" "${PROJECT_DIR}"
         log_success "Repository Cloned"
@@ -147,10 +146,10 @@ if !  $dry_run; then
 fi
 
 # 2: Create virtual Environment
-log_info "Creating virtual python environment"
+log_info "Creating virtual python environment: ${VENV_DIR}"
 if !  $dry_run; then
     if [ -d "${VENV_DIR}" ]; then
-        log_error "Virtual Environment \"$VENV_NAME\" exists, continuing install."
+        log_info "Virtual Environment \"$VENV_NAME\" exists, continuing install."
     else
         sudo python -m venv "${VENV_DIR}"
         log_success "Succesfully created ${VENV_NAME}"
