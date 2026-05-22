@@ -33,7 +33,7 @@ else:
     hdf_file = cur_day.strftime('%d_%m_%y.hdf5')
 
 # GOOGLE AUTHORIZATION
-
+folder_id = "1vgaHd2zrHlnLKV55_ARNKjABrqwS_hxM"
 
 
 # todo 2 paths? the raspi and the one on 
