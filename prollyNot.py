@@ -1,6 +1,6 @@
 #!
 
-from zwo import ZWOASICamera, ZWOASICameraParams
+from zwo import ZWOASICamera, ZWOASICameraParams, ZW
 import zwo as cammod
 import numpy as np
 import cv2 as cv
@@ -9,6 +9,7 @@ def nothing(x):
     pass
 # Let's assume the camera ID is 0 (e.g., only 1 camera is connected):
 id = 0
+
 
 # Create a new camera parameters instance (for demonstration purposes we are
 # connecting to a ASI62000M Pro model) which has a pid of "620b":
@@ -27,12 +28,18 @@ if not is_ready:
     print("Camera is not ready!")
     exit(1)
 
-raw_img = zwo.get_frame()
+frame = zwo.get_frame()
 zwo._get_video_frame
 
-img_array = np.array(raw_img)
+# Take image frame as list to array  of shape
+height = zwo.get_y_size()
+width = zwo.get_x_size()
+shape = (width, height)
+small_shape = tuple(int(ti/4) for ti in shape)
+img_array = np.array(frame, dtype=np.uint16).reshape(shape)
+
 # Create a black image, a window
-img = cv.resize(img_array, (255, 255))
+img = cv.resize(img_array, small_shape )
 cv.namedWindow('image')
  
 # create trackbars for color change
